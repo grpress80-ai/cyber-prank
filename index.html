@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Prank</title>
+<style>
+body {
+  background: black;
+  color: #00ff66;
+  font-family: monospace;
+  padding: 20px;
+}
+h2 { text-align: center; }
+button {
+  padding: 12px;
+  background: #00ff66;
+  border: 0;
+  width: 100%;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<h2>CYBER TERMINAL</h2>
+<p id="status">Ready to start...</p>
+<button onclick="startPrank()">START PRANK</button>
+<script>
+function startPrank() {
+  let status = document.getElementById("status");
+  status.textContent = "Initializing simulation...";
+  setTimeout(() => {
+    status.textContent = "Scanning demo data... 50%";
+  }, 1500);
+  setTimeout(() => {
+    status.textContent =
+      "SIMULATION COMPLETE! JUST A PRANK 😂";
+  }, 3000);
+}
+</script>
+</body>
+</html>
