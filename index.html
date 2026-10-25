@@ -1,42 +1,145 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cyber Prank</title>
-<style>
-body {
-  background: black;
-  color: #00ff66;
-  font-family: monospace;
-  padding: 20px;
-}
-h2 { text-align: center; }
-button {
-  padding: 12px;
-  background: #00ff66;
-  border: 0;
-  width: 100%;
-  font-weight: bold;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050807">
+  <title>Cyber Alert | Simulation</title>
+  <style>
+    :root { color-scheme: dark; --green: #54ff9b; --red: #ff4242; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; background: #050807; color: var(--green);
+      font-family: Consolas, "Courier New", monospace; overflow-x: hidden;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 2;
+      background: repeating-linear-gradient(transparent 0 3px, rgba(0,0,0,.18) 4px);
+    }
+    .wrap { width: min(900px, 100%); margin: auto; padding: 22px 16px 34px; }
+    .top { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; }
+    .brand { letter-spacing: 3px; font-weight: 900; }
+    .pill { border:1px solid var(--green); border-radius:99px; padding:6px 10px; font-size:12px; }
+    .panel { border:1px solid #1c6942; background:rgba(7,18,13,.92); padding:20px; margin-top:22px; box-shadow:0 0 26px #0a3c24; }
+    h1 { font-size:clamp(26px,6vw,48px); margin:14px 0; text-align:center; letter-spacing:2px; }
+    .sub { text-align:center; color:#a8d9bc; line-height:1.6; }
+    .alert { color:var(--red); border:1px solid var(--red); padding:12px; text-align:center; font-weight:bold; letter-spacing:2px; animation:pulse 1s infinite alternate; }
+    @keyframes pulse { from { box-shadow:0 0 2px #ff4242; } to { box-shadow:0 0 18px #ff424277; } }
+    .terminal { background:#020403; border:1px solid #24583a; padding:14px; min-height:220px; margin-top:18px; line-height:1.7; overflow-wrap:anywhere; }
+    .line { margin:4px 0; }
+    .muted { color:#80a991; }
+    .bar { height:12px; background:#14251b; border:1px solid #326a48; margin:10px 0 6px; overflow:hidden; }
+    .fill { width:0%; height:100%; background:var(--green); transition:width .3s ease; }
+    .percent { display:flex; justify-content:space-between; font-size:13px; color:#b6e8c8; }
+    button { display:block; width:100%; margin-top:18px; padding:15px; background:var(--green); color:#041109; border:0; font:900 16px Consolas,monospace; cursor:pointer; }
+    button:focus-visible { outline:3px solid white; outline-offset:3px; }
+    button:disabled { opacity:.6; cursor:wait; }
+    .result { display:none; margin-top:20px; padding:20px 12px; text-align:center; border:2px solid var(--green); background:#06130b; }
+    .result h2 { font-size:clamp(26px,7vw,42px); margin:0 0 10px; }
+    .small { color:#b8d6c2; font-size:12px; text-align:center; line-height:1.6; margin-top:18px; }
+    .blink { animation:blink 1s steps(2,start) infinite; }
+    @keyframes blink { to { visibility:hidden; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+  </style>
 </head>
 <body>
-<h2>CYBER TERMINAL</h2>
-<p id="status">Ready to start...</p>
-<button onclick="startPrank()">START PRANK</button>
-<script>
-function startPrank() {
-  let status = document.getElementById("status");
-  status.textContent = "Initializing simulation...";
-  setTimeout(() => {
-    status.textContent = "Scanning demo data... 50%";
-  }, 1500);
-  setTimeout(() => {
-    status.textContent =
-      "SIMULATION COMPLETE! JUST A PRANK 😂";
-  }, 3000);
-}
-</script>
+  <main class="wrap">
+    <div class="top">
+      <div class="brand">CYBER//TERMINAL</div>
+      <div class="pill">DEMO MODE · OFFLINE EFFECTS</div>
+    </div>
+
+    <section class="panel">
+      <div class="alert">⚠ SIMULATED SECURITY ALERT ⚠</div>
+      <h1>HACKER ALERT</h1>
+      <p class="sub">Visual-only cyber prank.<br>Nothing is being accessed, hacked, or uploaded.</p>
+
+      <div class="terminal" id="terminal" aria-live="polite">
+        <div class="line">&gt; Terminal ready.</div>
+        <div class="line">&gt; Waiting for user action<span class="blink">_</span></div>
+        <div class="line muted">&gt; This is a harmless on-screen simulation.</div>
+      </div>
+
+      <div class="bar" aria-label="Simulation progress"><div class="fill" id="fill"></div></div>
+      <div class="percent"><span id="stage">READY</span><span id="percent">0%</span></div>
+      <button id="start" type="button">START PRANK</button>
+
+      <div class="result" id="result" role="status">
+        <h2>😂 GOT YOU!</h2>
+        <p>JUST A PRANK — तू पकडला गेलास!</p>
+        <p class="muted">ही फक्त अॅनिमेशन होती. काहीही हॅक झालेलं नाही.</p>
+        <button id="again" type="button">PLAY AGAIN</button>
+      </div>
+    </section>
+
+    <p class="small">SAFE DEMO · NO SOUND · NO LOGIN · NO PASSWORD COLLECTION · NO NETWORK SCANNING</p>
+  </main>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const fill = document.getElementById('fill');
+    const percent = document.getElementById('percent');
+    const stage = document.getElementById('stage');
+    const start = document.getElementById('start');
+    const result = document.getElementById('result');
+    const again = document.getElementById('again');
+
+    const messages = [
+      'Initializing visual demo...',
+      'Loading fictional terminal effects...',
+      'Scanning imaginary data: 32%',
+      'Scanning imaginary data: 67%',
+      'Checking demo status...',
+      'Simulation complete.'
+    ];
+    let timers = [];
+
+    function resetDemo() {
+      timers.forEach(clearTimeout);
+      timers = [];
+      terminal.replaceChildren();
+      const first = document.createElement('div');
+      first.className = 'line';
+      first.textContent = '> Terminal ready.';
+      terminal.appendChild(first);
+      const second = document.createElement('div');
+      second.className = 'line muted';
+      second.textContent = '> Visual-only simulation. No real scan is performed.';
+      terminal.appendChild(second);
+      fill.style.width = '0%';
+      percent.textContent = '0%';
+      stage.textContent = 'READY';
+      result.style.display = 'none';
+      start.disabled = false;
+      start.style.display = 'block';
+      start.textContent = 'START PRANK';
+    }
+
+    start.addEventListener('click', () => {
+      start.disabled = true;
+      start.textContent = 'SIMULATION RUNNING...';
+      result.style.display = 'none';
+
+      messages.forEach((message, index) => {
+        timers.push(setTimeout(() => {
+          const line = document.createElement('div');
+          line.className = 'line';
+          line.textContent = '> ' + message;
+          terminal.appendChild(line);
+          terminal.scrollTop = terminal.scrollHeight;
+          const value = Math.round(((index + 1) / messages.length) * 100);
+          fill.style.width = value + '%';
+          percent.textContent = value + '%';
+          stage.textContent = value < 100 ? 'RUNNING DEMO' : 'COMPLETE';
+          if (index === messages.length - 1) {
+            start.style.display = 'none';
+            result.style.display = 'block';
+          }
+        }, (index + 1) * 900));
+      });
+    });
+
+    again.addEventListener('click', resetDemo);
+  </script>
 </body>
 </html>
